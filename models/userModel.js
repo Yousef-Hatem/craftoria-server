@@ -1,10 +1,9 @@
 const mongoose = require ('mongoose');
 const bcrypt = require('bcrypt');
-let userSchema = mongoose.Schema({
+let userSchema = new mongoose.Schema({
     name:{
         type:String,
         required:[true, 'Name is Required'],
-        match:/^[a-zA-Z\s]/
     },
     email:{
         type:String,
@@ -15,8 +14,6 @@ let userSchema = mongoose.Schema({
     password:{
         type:String,
         required:[true, 'Password is Required'],
-        minlenth:8,
-        match:/^(?=.[a-z])(?=.[A-Z])(?=.\d)[A-Za-z\d@$!%?&]{8}$ /
     },
     cart:{
         items:[{
@@ -38,9 +35,8 @@ let userSchema = mongoose.Schema({
         city:String,
         governorate:String,
         zipCode:String,
-        country:String
     }],
-    mobileNumbers:[{
+    phone:[{
         type:string,
         match:/^01[0-5][0-9]{8}$/
     }],
