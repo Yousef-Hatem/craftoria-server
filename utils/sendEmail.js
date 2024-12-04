@@ -18,7 +18,7 @@ const sendEmail = async (options) => {
     from: `Craftoria <${process.env.EMAIL_USER}>`,
     to: options.email,
     subject: options.subject,
-    text: options.message,
+    html: options.message,
   };
 
   await transporter.sendMail(mailOpts);
