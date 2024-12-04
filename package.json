@@ -1,7 +1,7 @@
 {
   "name": "craftoria-server",
   "version": "0.0.1",
-  "description": "<h1 align=\"center\">Craftoria Server</h1>\r <p align=\"center\">Craftoria node js server</p>",
+  "description": "craftoria node js server",
   "main": "server.js",
   "scripts": {
     "start:dev": "nodemon server.js",
@@ -13,7 +13,7 @@
     "bcrypt": "^5.1.1",
     "compression": "^1.7.5",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "express-async-handler": "^1.2.0",
     "express-mongo-sanitize": "^2.2.0",
@@ -44,7 +44,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
     "nodemon": "^3.1.7",
-    "prettier": "^3.4.1"
+    "prettier": "^3.4.2"
   },
   "engines": {
     "node": ">=20.14.0"
