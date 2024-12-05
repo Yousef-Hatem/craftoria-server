@@ -234,7 +234,7 @@ module.exports.emailVerificationMessage = (
             <!-- start unsubscribe -->
             <tr>
               <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                <p style="margin: 0;">© ${new Date("Y")} Craftoria</p>
+                <p style="margin: 0;">© ${new Date().getFullYear()} Craftoria</p>
               </td>
             </tr>
             <!-- end unsubscribe -->

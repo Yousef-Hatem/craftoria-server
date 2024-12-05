@@ -5,7 +5,7 @@ const User = require("../../models/userModel");
 exports.signupValidator = [
   check("name")
     .notEmpty()
-    .withMessage("User required")
+    .withMessage("User name is required")
     .isLength({ min: 3 })
     .withMessage("Too short user name"),
 
