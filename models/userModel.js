@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const validateUser = require('../utils/validators/userValidator');
 
 const userSchema = new mongoose.Schema(
   {
@@ -46,12 +47,10 @@ const userSchema = new mongoose.Schema(
         zipCode: String,
       },
     ],
-    phone: [
-      {
+    phone:{
         type: String,
-        match: /^01[0-5][0-9]{8}$/,
+        match: /^\+20\d{10}$/,
       },
-    ],
     favorite: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -69,6 +68,6 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema ,validateUser );
 
 module.exports = User;

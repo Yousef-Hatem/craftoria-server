@@ -12,6 +12,14 @@ const {
   changeUserPassword,
 } = require("../controllers/userController");
 
+const {
+  createUser, 
+  getUser, 
+  updateUser, 
+  deleteUser, 
+  updateLoggedUserData
+} = require("../utils/validators/userValidator");
+
 const authService = require("../controllers/authController");
 
 const router = express.Router();
