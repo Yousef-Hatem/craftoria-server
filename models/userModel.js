@@ -46,12 +46,10 @@ const userSchema = new mongoose.Schema(
         zipCode: String,
       },
     ],
-    phone: [
-      {
-        type: String,
-        match: /^01[0-5][0-9]{8}$/,
-      },
-    ],
+    phone: {
+      type: String,
+      match: /^\+20\d{10}$/,
+    },
     favorite: [
       {
         type: mongoose.Schema.Types.ObjectId,
