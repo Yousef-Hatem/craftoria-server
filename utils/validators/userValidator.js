@@ -1,122 +1,109 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const { check , body} = require("express-validator");
-const User = require("../../models/userModel");
+const { check, body } = require("express-validator");
+const validatorMiddleware = require("../../middlewares/validatorMiddleware");
 
-exports.createUser = [
-    check('name')
-        .notEmpty()
-        .isLength({min:3})
-        .withMessage('Name must be at least 3 characters long.'),
-    check('email')
-        .notEmpty()
-        .withMessage("Email required")
-        .isEmail()
-        .withMessage("Invalid email address"),
-    check('password')
-        .notEmpty()
-        .withMessage("Password required")
-        .isLength({ min: 6 })
-        .isStrongPassword()
-        .withMessage('Password must be at least 6 characters long.')
-]
+exports.createUserValidator = [
+  check("name")
+    .notEmpty()
+    .withMessage("Name required")
+    .isLength({ min: 3 })
+    .withMessage("Name must be at least 3 characters long."),
+  check("email")
+    .notEmpty()
+    .withMessage("Email required")
+    .isEmail()
+    .withMessage("Invalid email address")
+    .normalizeEmail(),
+  check("password")
+    .notEmpty()
+    .withMessage("Password required")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long.")
+    .custom((password, { req }) => {
+      if (password !== req.body.passwordConfirm) {
+        throw new Error("Password confirmation incorrect");
+      }
+      return true;
+    }),
+  check("passwordConfirm")
+    .notEmpty()
+    .withMessage("Password confirmation required"),
+  check("role")
+    .optional()
+    .isIn(["user", "admin"])
+    .withMessage("Role must be user or admin"),
+  validatorMiddleware,
+];
 
-exports.getUser = [
-    check('userId')
-        .isMongoId()
-        .withMessage('Invalid user ID')
-        .custom(async (value)=>{
-            const user = await User.findById(value);
-            if (!user){
-                throw new Error('User not found');
-            }
-            return true;
-        })
-]
+exports.getUserValidator = [
+  check("id").isMongoId().withMessage("Invalid user id format"),
+  validatorMiddleware,
+];
 
-exports.updateUser = [
-    check('userId')
-        .isMongoId()
-        .withMessage('Invalid user ID')
-        .custom(async (value)=>{
-            const user = await User.findById(value);
-            if (!user){
-                throw new Error('User not found');
-            }
-            return true;
-        }),
-        body('name')
-            .optional()
-            .isString()
-            .trim(),
-        body('email')
-            .optional()
-            .isEmail()
-            .normaliseEmail()
-]
+exports.updateUserValidator = [
+  check("id").isMongoId().withMessage("Invalid user id format"),
+  body("name").optional().isString().withMessage("Name must be string").trim(),
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Invalid email address")
+    .normalizeEmail(),
+  check("role")
+    .optional()
+    .isIn(["user", "admin"])
+    .withMessage("Role must be user or admin"),
+  validatorMiddleware,
+];
 
-exports.deleteUser = [
-    check('userId')
-        .isMongoId()
-        .withMessage('Invalid user ID')
-        .custom(async (value)=>{
-            const user = await User.findById(value);
-            if (!user){
-                throw new Error('User not found');
-            }
-            return true;
-        }),
-        body('password')
-            .optional()
-            .custom(async (value,{req})=>{
-                const user = req.user;
-                const isMatch = await bcrypt.compare(value,user.password);
-                if (!isMatch){
-                    throw new Error('Incorrect password');
-                }
-                return true;
-            })
-]
+exports.deleteUserValidator = [
+  check("id").isMongoId().withMessage("invalid user id format"),
+  validatorMiddleware,
+];
 
+exports.updateLoggedUserDataValidator = [
+  body("name").optional().isString().withMessage("Name must be string").trim(),
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Invalid email address")
+    .normalizeEmail(),
+  validatorMiddleware,
+];
 
-exports.updateLoggedUserData = [
-    check('userId')
-        .isMongoId()
-        .withMessage('Invalid user ID')
-        .custom(async (value)=>{
-            const user = await User.findById(value);
-            if (!user){
-                throw new Error('User not found');
-            }
-            return true;
-        }),
-        body('password')
-            .custom(async (value,{req})=>{
-                const user = req.user;
-                const isMatch = await bcrypt.compare(value,user.password);
-                if (!isMatch){
-                    throw new Error('Incorrect password');
-                }
-                return true;
-            }),
-        body('newName')
-            .optional()
-            .isString()
-            .trim(),
-        body('newEmail')
-            .optional()
-            .isEmail()
-            .normaliseEmail(),
-        body('newPassword')
-            .optional()
-            .isStrongPassword()
-            .custom(async (value, {req})=>{
-                if(value){
-                    const hashedPassword = await bcrypt.hash(value,10);
-                    req.newPassword = hashedPassword;
-                }
-                return true;
-            })
+exports.updateLoggedUserPasswordValidator = [
+  check("password")
+    .notEmpty()
+    .withMessage("Password required")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters")
+    .custom((password, { req }) => {
+      if (password !== req.body.passwordConfirm) {
+        throw new Error("Password confirmation incorrect");
+      }
+      return true;
+    }),
 
-]
+  check("passwordConfirm")
+    .notEmpty()
+    .withMessage("Password confirmation required"),
+  validatorMiddleware,
+];
+
+exports.changeUserPasswordValidator = [
+  check("id").isMongoId().withMessage("Invalid user id format"),
+  check("password")
+    .notEmpty()
+    .withMessage("Password required")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters")
+    .custom((password, { req }) => {
+      if (password !== req.body.passwordConfirm) {
+        throw new Error("Password confirmation incorrect");
+      }
+      return true;
+    }),
+
+  check("passwordConfirm")
+    .notEmpty()
+    .withMessage("Password confirmation required"),
+  validatorMiddleware,
+];
