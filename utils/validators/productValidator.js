@@ -13,7 +13,6 @@ const checkCategoryExists = async (categoryId) => {
 };
 
 
-
 exports.createProductValidation = [
   check("title")
     .notEmpty()
@@ -24,13 +23,21 @@ exports.createProductValidation = [
   check("price")
     .notEmpty()
     .withMessage("Price is required.")
-    .isFloat({ min: 0, max: 10000 })
-    .withMessage("Price must be between 0 and 10000."),
+    .isFloat({ min: 1, max: 10000 })
+    .withMessage("Price must be between 1 and 10000."),
 
   check("originalPrice")
     .optional()
-    .isFloat({ min: 0, max: 2000 })
-    .withMessage("Original Price must be between 0 and 2000."),
+    .isFloat({ min: 1, max: 2000 })
+    .withMessage("Original Price must be between 1 and 2000.")
+    .custom((value,{req})=>{
+      if(value<req.body.price){
+        throw new Error ("Original Price must be greater than or equal to the price.")
+      }
+      return true
+    }),
+
+
 
   check("category")
     .notEmpty()
@@ -73,6 +80,7 @@ exports.updateProductValidation = [
     .optional()
     .isLength({ max: 100 })
     .withMessage("Title cannot exceed 100 characters."),
+   
 
   check("price")
     .optional()
@@ -84,8 +92,8 @@ exports.updateProductValidation = [
     .optional()
     .withMessage("Category ID is required")
     .isMongoId()
-    .withMessage("Invalid Category ID."),
-
+    .withMessage("Invalid Category ID.")
+    .custom(checkCategoryExists),
 
 
   check("originalPrice")
@@ -131,7 +139,7 @@ exports.deleteProductValidation = [
 exports.getProductValidation = [
   check("id")
     .notEmpty()
-    .withMessage("ID is required.")
+   
     .isMongoId()
     .withMessage("Invalid ID."),
 
