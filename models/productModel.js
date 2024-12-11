@@ -5,6 +5,7 @@ const productSchema = new mongoose.Schema({
     title: { 
         type: String, 
         required: [true, 'Title is required.'] ,
+        trim:true,
         maxLength: 100 
     },
     price: { 
@@ -16,8 +17,8 @@ const productSchema = new mongoose.Schema({
     ,
     originalPrice: { 
         type: Number, 
-        min: 0, 
-        max: 20000 
+        min:[0, 'Price must be at least 0.'], 
+        max: [20000, 'Price cannot exceed 20000.'] 
     }
     ,
     category: { 
@@ -28,6 +29,7 @@ const productSchema = new mongoose.Schema({
     description: { 
         type: String, 
         required: [true, 'Description is required.'] ,
+        trim:true,
         maxLength: 500 
     },
     quantity: { 
@@ -39,8 +41,7 @@ const productSchema = new mongoose.Schema({
     imageUrls: { 
         type: [String], 
         required: [true, 'At least one image is required.'], 
-        // `required` ensures the field exists and is not undefined.
-        // `validate` adds custom logic to ensure the array is not empty.
+      
         validate: {
             validator: function(value) {
                 return value.length > 0;
@@ -49,7 +50,7 @@ const productSchema = new mongoose.Schema({
         }
     }
     
-});
+}, { timestamps: true });
 
 const Product = mongoose.model('Product', productSchema);
 
