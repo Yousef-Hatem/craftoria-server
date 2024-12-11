@@ -1,112 +1,109 @@
-const {check}=require ("express-validator")
-
+const { check } = require("express-validator");
 const validatorMiddleware = require("../../middlewares/validatorMiddleware");
+const categoryModel = require("../../models/categoryModel");
 
-exports.creatProductValidation=[
-    check("title")
+
+
+const checkCategoryExists = async (categoryId) => {
+  const categoryExist = await categoryModel.findById(categoryId);
+  if (!categoryExist) {
+    throw new Error("Category does not exist.");
+  }
+  return true;
+};
+
+
+
+exports.createProductValidation = [
+  check("title")
     .notEmpty()
-    .withMessage("title is required")
-    .isLength({max:100})
-    .withMessage("title can not exceed 200 characters"),
+    .withMessage("Title is required.")
+    .isLength({ max: 100 })
+    .withMessage("Title cannot exceed 100 characters."),
 
-
-    check("price")
+  check("price")
     .notEmpty()
-    .withMessage("price is required")
-    .isFloat({min:0,max:1000})
-    .withMessage("price must be between 0 and 10000"),
+    .withMessage("Price is required.")
+    .isFloat({ min: 0, max: 10000 })
+    .withMessage("Price must be between 0 and 10000."),
 
-    check("originalPrice")
+  check("originalPrice")
     .optional()
-    .isFloat({min:0,max:2000})
-    .withMessage("original price is required"),
+    .isFloat({ min: 0, max: 2000 })
+    .withMessage("Original Price must be between 0 and 2000."),
 
-
-    check("category")
+  check("category")
     .notEmpty()
     .withMessage("Category ID is required.")
     .isMongoId()
-    .withMessage("Invalid Category ID."),
+    .withMessage("Invalid Category ID.")
+    .custom(checkCategoryExists),
 
-
-
-    check("description")
+  check("description")
     .notEmpty()
     .withMessage("Description is required.")
     .isLength({ max: 500 })
     .withMessage("Description cannot exceed 500 characters."),
 
-
-
-    check("quantity")
+  check("quantity")
     .notEmpty()
     .withMessage("Quantity is required.")
     .isInt({ min: 0, max: 10000 })
     .withMessage("Quantity must be between 0 and 10000."),
 
-
-
-    check("imgeUrls")
+  check("imageUrls")
     .notEmpty()
-    .withMessage("at least one img url is required")
-    .isArray({min:1})
+    .withMessage("At least one image URL is required.")
+    .isArray({ min: 1 })
     .withMessage("Image URLs must be an array with at least one item.")
-.custom((value)=>{
-if(!Array.isArray(value)||!value.every((url)=> typeof url==="string")){
-    throw new Error("All image URLs must be valid strings."); 
-}
-return true
-}),
+    .custom((value) => {
+      if (!Array.isArray(value) || !value.every((url) => typeof url === "string")) {
+        throw new Error("All image URLs must be valid strings.");
+      }
+      return true;
+    }),
 
-validatorMiddleware
-]
-
-
+  validatorMiddleware,
+];
 
 
 
-
-
-exports.updateProductValidation=[
-    check("title")
+exports.updateProductValidation = [
+  check("title")
     .optional()
     .isLength({ max: 100 })
     .withMessage("Title cannot exceed 100 characters."),
 
-
-
-
-    check("price")
+  check("price")
     .optional()
     .isFloat({ min: 0, max: 10000 })
     .withMessage("Price must be between 0 and 10000."),
 
 
+    check("category")
+    .optional()
+    .withMessage("Category ID is required")
+    .isMongoId()
+    .withMessage("Invalid Category ID."),
 
-    check("originalPrice")
+
+
+  check("originalPrice")
     .optional()
     .isFloat({ min: 0, max: 20000 })
     .withMessage("Original Price must be between 0 and 20000."),
-
-
 
   check("description")
     .optional()
     .isLength({ max: 500 })
     .withMessage("Description cannot exceed 500 characters."),
 
-
-
-
-    check("quantity")
+  check("quantity")
     .optional()
     .isInt({ min: 0, max: 10000 })
     .withMessage("Quantity must be between 0 and 10000."),
 
-
-
-
-    check("imageUrls")
+  check("imageUrls")
     .optional()
     .isArray({ min: 1 })
     .withMessage("Image URLs must be an array with at least one item.")
@@ -122,13 +119,21 @@ exports.updateProductValidation=[
 
 
 
-exports.deleteProducValidation=[
-check("productId")
-.notEmpty()
-.withMessage("product Id is required ")
-.isMongoId()
-.withMessage("Invalid Product ID."),
+exports.deleteProductValidation = [
+  check("id")
+    .isMongoId()
+    .withMessage("Invalid Product ID."),
+
+  validatorMiddleware,
+];
 
 
-validatorMiddleware,
-]
+exports.getProductValidation = [
+  check("id")
+    .notEmpty()
+    .withMessage("ID is required.")
+    .isMongoId()
+    .withMessage("Invalid ID."),
+
+  validatorMiddleware,
+];
