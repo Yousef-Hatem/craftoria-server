@@ -1,6 +1,6 @@
 const productModel=require("../models/productModel")
 
-let getProduct= async(req,res)=>{
+const getProducts= async(req,res)=>{
 try{
 const products=await productModel.find().populate("id");
 res.status(200).json({message:"Product fetched successfully",data:products})
@@ -11,7 +11,7 @@ res.status(400).json({message:err.message})
 };
 
 
-let postProduct=async(req,res)=>{
+const postProduct=async(req,res)=>{
     const newProduct=req.body
     try{
 const createProduct=await productModel.create(newProduct)
@@ -24,7 +24,7 @@ res.status(200).json({message:"The product created successfully",date:createProd
 }
 
 
-let getProductById=async(req,res)=>{
+const getProductById=async(req,res)=>{
     const {id}=req.params
     try{
         const getProduct=await productModel.findById(id)
@@ -42,7 +42,7 @@ let getProductById=async(req,res)=>{
 
 
 
-let deleteSpecificProduct= async(req,res)=>{
+const deleteSpecificProduct= async(req,res)=>{
     const {id}=req.params
     try{
         const deleteProduct=await productModel.findByIdAndDelete(id)
@@ -59,7 +59,7 @@ let deleteSpecificProduct= async(req,res)=>{
 
 
 
-let updatedProduct=async(req,res)=>{
+const updatedProduct=async(req,res)=>{
     const {id}=req.params
     const updates=req.body
     try{
@@ -77,4 +77,4 @@ let updatedProduct=async(req,res)=>{
     }
 };
 
-module.exports ={getProduct,postProduct,getProductById,deleteSpecificProduct,updatedProduct}
+module.exports ={getProducts,postProduct,getProductById,deleteSpecificProduct,updatedProduct}
