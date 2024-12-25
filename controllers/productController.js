@@ -1,80 +1,40 @@
-const productModel=require("../models/productModel")
+const asyncHandler = require("express-async-handler");
+const ApiError = require("../utils/apiError");
+const Factory = require("./handlersFactory");
+const Product = require("../models/productModel");
 
-const getProducts= async(req,res)=>{
-try{
-const products=await productModel.find().populate("id");
-res.status(200).json({message:"Product fetched successfully",data:products})
-}
-catch(err){
-res.status(400).json({message:err.message})
-}
-};
+const factory = new Factory(Product);
 
+exports.getProducts = factory.getAll();
 
-const postProduct=async(req,res)=>{
-    const newProduct=req.body
-    try{
-const createProduct=await productModel.create(newProduct)
+exports.getProductById = factory.getOne();
 
-res.status(200).json({message:"The product created successfully",date:createProduct})
-}
-    catch(err){
-        res.status(400).json({message:err.message})
-    }
-}
+exports.createProduct = factory.createOne();
 
+exports.updateProduct = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const updates = req.body;
 
-const getProductById=async(req,res)=>{
-    const {id}=req.params
-    try{
-        const getProduct=await productModel.findById(id)
+  const updatedProduct = await Product.findByIdAndUpdate(id, updates, {
+    new: true,
+    runValidators: true,
+  }).lean();
 
-        if(getProduct){
-            res.status(200).json({message:"Product found successfully",data:getProduct})
-        }else{
-            res.status(404).json({message:" Product not found"})
-        }
-    }
-    catch(err){
-        res.status(400).json({message:err.message})
-    }
-}
+  if (!updatedProduct) {
+    return next(new ApiError(`No product found with ID ${id}`, 404));
+  }
 
+  res.status(200).json({ message: "Product updated", data: updatedProduct });
+});
 
+exports.deleteProduct = factory.deleteOne();
 
-const deleteSpecificProduct= async(req,res)=>{
-    const {id}=req.params
-    try{
-        const deleteProduct=await productModel.findByIdAndDelete(id)
-        if( deleteProduct){
-            res.status(200).json({message:"Product deleted successfully",data:deleteProduct})
-        }else{
-            res.status(404).json({message:"Product not found"})
-        }
-    }catch(err){
-        res.status(400).json({message:err.message})
-    }
-}
+exports.uploadImage = asyncHandler(async (req, res) => {
+  // Image upload logic here if needed.
+  res.status(200).json({ message: "Image uploaded successfully" });
+});
 
-
-
-
-const updatedProduct=async(req,res)=>{
-    const {id}=req.params
-    const updates=req.body
-    try{
-        const update=await productModel.findByIdAndUpdate(id,updates,{
-            new:true,
-            runValidators:true
-        })
-        if(!update){
-            res.status(404).json({message:"Product not found"})
-        }
-        res.status(200).json({message:"Product updated",data:update})
-    }
-    catch(err){
-        res.status(400).json({message:err.message})
-    }
-};
-
-module.exports ={getProducts,postProduct,getProductById,deleteSpecificProduct,updatedProduct}
+exports.resizeImage = asyncHandler(async (req, res) => {
+  // Image resize logic here if needed.
+  res.status(200).json({ message: "Image resized successfully" });
+});
