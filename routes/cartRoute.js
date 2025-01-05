@@ -1,17 +1,25 @@
 const express = require("express");
 
-const { validateCart } = require('../utils/validators/cartValidator')
 const {
-    addItemToCart,
-    updateItemsQuantity,
-    removeProduct,
+  addItemToCartValidator,
+  updateItemQuantityValidator,
+  removeItemValidator,
+} = require("../utils/validators/cartValidator");
+const {
+  getLoggedUserCart,
+  addItemToCart,
+  updateItemQuantity,
+  removeItem,
 } = require("../controllers/cartController");
-
+const { protect } = require("../controllers/authController");
 
 const router = express.Router();
 
-router.post('/cart/:productId' , validateCart , updateItemsQuantity);
-router.put('/cart/:productId' , validateCart , addItemToCart );
-router.delete('/cart/:productId' , removeProduct)
+router.use(protect);
+
+router.get("/", getLoggedUserCart);
+router.post("/", addItemToCartValidator, addItemToCart);
+router.put("/:productId", updateItemQuantityValidator, updateItemQuantity);
+router.delete("/:productId", removeItemValidator, removeItem);
 
 module.exports = router;
