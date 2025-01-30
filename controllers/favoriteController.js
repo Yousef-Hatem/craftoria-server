@@ -3,6 +3,8 @@ const User = require("../models/userModel");
 const ApiError = require("../utils/apiError");
 
 // Add product to favorites
+// Add product to favorites
+
 
 exports.addfavorite = asyncHandler(async (req, res, next) => {
   const { productId } = req.body;
