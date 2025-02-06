@@ -10,6 +10,10 @@ const couponSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  percentageDiscount:{
+    type:Number,
+    require:false,
+  },
   expirationDate: {
     type: Date,
     required: true,

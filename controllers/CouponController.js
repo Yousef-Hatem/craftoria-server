@@ -1,10 +1,10 @@
-const Coupon = require("./models/Coupon");
+const Coupon = require("../models/coupon");
 
 // Create a new coupon
 const createCoupon = async (req, res) => {
   try {
-    const { code, discount, expirationDate } = req.body;
-    const coupon = new Coupon({ code, discount, expirationDate });
+    const { code, discount, percentageDiscount, expirationDate } = req.body;
+    const coupon = new Coupon({ code, discount, percentageDiscount, expirationDate });
     await coupon.save();
     res.status(201).json({ success: true, coupon });
   } catch (error) {
