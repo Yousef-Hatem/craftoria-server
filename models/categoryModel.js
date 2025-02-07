@@ -1,34 +1,26 @@
 const mongoose = require('mongoose');
 
-
 const categorySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Category name is required'],
         trim: true,
         unique: true,
-        minlength: [3, 'Category name must be at least 3 characters long'],
+        required: [true, 'Category name is required'],
+        maxLength: [60, 'Category name is too long'],
+        minLength: [3, 'Category name is too short'],
     },
     description: {
         type: String,
         trim: true,
+        required: [true, 'Category description is required'],
+        maxLength: [250, 'Category description is too long'],
+        minLength: [3, 'Category description is too short'],
     },
     image: {
         type: String,
-        default: null,
+        required: [true, 'Category image is required'],
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
-}, {
-    timestamps: true,
-});
-
+}, { timestamps: true });
 
 const Category = mongoose.model('Category', categorySchema);
 
