@@ -3,14 +3,14 @@ const Category = require("../models/categoryModel");
 const { sanitizeCategory } = require("../utils/sanitize/sanitizeCategory");
 const {
   uploadSingleImage,
-  resizeImage,
+  resizeImages,
 } = require("../middlewares/uploadImageMiddleware");
 
 const factory = new Factory(Category);
 
 exports.uploadImage = uploadSingleImage("image");
 
-exports.resizeImage = resizeImage({
+exports.resizeImage = resizeImages({
   model: Category,
   fieldName: "image",
   resize: [500, 500],
