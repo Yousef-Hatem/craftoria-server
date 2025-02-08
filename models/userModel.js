@@ -5,11 +5,11 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is Required"],
+      required: [true, "Name required"],
     },
     email: {
       type: String,
-      required: [true, "Email is Required"],
+      required: [true, "Email required"],
       unique: true,
       match: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
     },
@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
     verifiedCode: String,
     password: {
       type: String,
-      required: [true, "Password is Required"],
+      required: [true, "Password required"],
     },
     passwordChangedAt: Date,
     role: {
@@ -32,9 +32,13 @@ const userSchema = new mongoose.Schema(
       {
         productId: {
           type: mongoose.Schema.Types.ObjectId,
+          required: [true, "Product id is required"],
           ref: "Product",
         },
-        quantity: Number,
+        quantity: {
+          type: Number,
+          default: 1,
+        },
       },
     ],
     address: [
@@ -46,12 +50,10 @@ const userSchema = new mongoose.Schema(
         zipCode: String,
       },
     ],
-    phone: [
-      {
-        type: String,
-        match: /^01[0-5][0-9]{8}$/,
-      },
-    ],
+    phone: {
+      type: String,
+      match: /^\+20\d{10}$/,
+    },
     favorite: [
       {
         type: mongoose.Schema.Types.ObjectId,
