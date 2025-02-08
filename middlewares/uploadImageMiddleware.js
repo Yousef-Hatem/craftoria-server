@@ -44,6 +44,31 @@ const saveImage = async (sharpImage, folder, filename) => {
   }
 };
 
+const resizeImage = async (file, options) => {
+  const mimetype =
+    file.mimetype === "image/png" && options.allowSavingInPngFormat === true
+      ? "png"
+      : "jpeg";
+
+  const image = sharp(file.buffer)
+    .resize(...options.resize)
+    .toFormat(mimetype);
+
+  const quality = options.quality || 95;
+  if (mimetype === "png") {
+    image.png({ quality });
+  } else {
+    image.jpeg({ quality });
+  }
+
+  const folderName = pluralize(options.model.modelName).toLowerCase();
+  const filename = `${uuidv4()}-${Date.now()}.${mimetype}`;
+
+  await saveImage(image, folderName, filename);
+
+  return filename;
+};
+
 exports.uploadSingleImage = (fieldName) => (req, res, next) =>
   multerOptions().single(fieldName)(req, res, (...parameters) => {
     req.body = JSON.parse(JSON.stringify(req.body));
@@ -53,32 +78,19 @@ exports.uploadSingleImage = (fieldName) => (req, res, next) =>
 exports.uploadMixOfImages = (arrayOfFields) =>
   multerOptions().fields(arrayOfFields);
 
-exports.resizeImage = (options = {}) =>
+exports.resizeImages = (options = {}) =>
   asyncHandler(async (req, res, next) => {
     if (req.file) {
-      const mimetype =
-        req.file.mimetype === "image/png" &&
-        options.allowSavingInPngFormat === true
-          ? "png"
-          : "jpeg";
+      req.body[options.fieldName] = await resizeImage(req.file, options);
+    }
 
-      const image = sharp(req.file.buffer)
-        .resize(...options.resize)
-        .toFormat(mimetype);
-
-      const quality = options.quality || 95;
-      if (mimetype === "png") {
-        image.png({ quality });
-      } else {
-        image.jpeg({ quality });
+    if (req.files) {
+      const files = req.files[options.fieldName];
+      if (files) {
+        req.body[options.fieldName] = await Promise.all(
+          files.map((file) => resizeImage(file, options))
+        );
       }
-
-      const folderName = pluralize(options.model.modelName).toLowerCase();
-      const filename = `${uuidv4()}-${Date.now()}.${mimetype}`;
-
-      await saveImage(image, folderName, filename);
-
-      req.body[options.fieldName] = filename;
     }
 
     next();
