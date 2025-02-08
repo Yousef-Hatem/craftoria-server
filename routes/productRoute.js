@@ -4,20 +4,23 @@ const {
   updateProduct,
   createProduct,
   deleteProduct,
-  getProductById,
-  uploadImage,
-  resizeImage,
+  getProduct,
+  uploadImages,
+  resizeImages,
 } = require("../controllers/productController");
 const authService = require("../controllers/authController");
 
 const router = express.Router();
 
 router.get("/", getProducts);
-router.get("/:id", getProductById);
+router.get("/:id", getProduct);
 
 router.use(authService.protect, authService.allowedTo("admin"));
-router.post("/", uploadImage,resizeImage,  createProduct);
-router.put("/:id", updateProduct);
-router.delete("/:id", deleteProduct);
+
+router.post("/", uploadImages, resizeImages, createProduct);
+
+router
+  .put("/:id", uploadImages, resizeImages, updateProduct)
+  .delete("/:id", deleteProduct);
 
 module.exports = router;
