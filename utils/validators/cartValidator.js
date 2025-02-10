@@ -24,7 +24,7 @@ exports.updateItemQuantityValidator = [
     .withMessage("Product id is invalid")
     .custom((id, { req }) => {
       const itemIndex = req.user.cart.findIndex(
-        (item) => item.productId.toString() === id
+        (item) => item.product.toString() === id
       );
       if (itemIndex === -1) {
         throw new Error(`There is no product for this id`);
@@ -48,7 +48,7 @@ exports.removeItemValidator = [
     .withMessage("Product id is invalid")
     .custom((id, { req }) => {
       const itemIndex = req.user.cart.findIndex(
-        (item) => item.productId.toString() === id
+        (item) => item.product.toString() === id
       );
       if (itemIndex === -1) {
         throw new Error(`There is no product for this id`);
