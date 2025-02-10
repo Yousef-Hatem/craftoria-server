@@ -22,6 +22,12 @@ exports.signupValidator = [
       })
     ),
 
+  check("phone")
+    .notEmpty()
+    .withMessage("Phone required")
+    .isMobilePhone("ar-EG")
+    .withMessage("Invalid phone number. It must be an Egyptian number"),
+
   check("password")
     .notEmpty()
     .withMessage("Password required")

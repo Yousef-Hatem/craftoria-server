@@ -10,7 +10,9 @@ const { sanitizeUser } = require("../utils/sanitize/sanitizeUser");
 
 const factory = new Factory(User);
 
-exports.getUsers = factory.getAll({ select: "name email verified createdAt" });
+exports.getUsers = factory.getAll({
+  select: "name email phone verified createdAt",
+});
 
 exports.getUser = factory.getOne({ addSelect: "-password" });
 
@@ -60,7 +62,7 @@ exports.getLoggedUserData = asyncHandler(async (req, res) => {
 
 exports.updateLoggedUserData = asyncHandler(async (req, res) => {
   const update = {};
-  const { name, email } = req.body;
+  const { name, email, phone } = req.body;
 
   if (name) {
     update.name = name;
@@ -69,6 +71,10 @@ exports.updateLoggedUserData = asyncHandler(async (req, res) => {
   if (email && email !== req.user.email) {
     update.email = req.body.email;
     update.verified = false;
+  }
+
+  if (phone) {
+    update.phone = phone;
   }
 
   const updatedUser = await User.findByIdAndUpdate(req.user._id, update, {
