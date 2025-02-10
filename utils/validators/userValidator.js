@@ -1,5 +1,6 @@
 const { check, body } = require("express-validator");
 const validatorMiddleware = require("../../middlewares/validatorMiddleware");
+const User = require("../../models/userModel");
 
 exports.createUserValidator = [
   check("name")
@@ -12,7 +13,19 @@ exports.createUserValidator = [
     .withMessage("Email required")
     .isEmail()
     .withMessage("Invalid email address")
-    .normalizeEmail(),
+    .normalizeEmail()
+    .custom((val) =>
+      User.findOne({ email: val }).then((user) => {
+        if (user) {
+          return Promise.reject(new Error("E-mail already in user"));
+        }
+      })
+    ),
+  check("phone")
+    .notEmpty()
+    .withMessage("Phone required")
+    .isMobilePhone("ar-EG")
+    .withMessage("Invalid phone number. It must be an Egyptian number"),
   check("password")
     .notEmpty()
     .withMessage("Password required")
@@ -46,7 +59,18 @@ exports.updateUserValidator = [
     .optional()
     .isEmail()
     .withMessage("Invalid email address")
-    .normalizeEmail(),
+    .normalizeEmail()
+    .custom((val) =>
+      User.findOne({ email: val }).then((user) => {
+        if (user) {
+          return Promise.reject(new Error("E-mail already in user"));
+        }
+      })
+    ),
+  check("phone")
+    .optional()
+    .isMobilePhone("ar-EG")
+    .withMessage("Invalid phone number. It must be an Egyptian number"),
   check("role")
     .optional()
     .isIn(["user", "admin"])
@@ -65,7 +89,18 @@ exports.updateLoggedUserDataValidator = [
     .optional()
     .isEmail()
     .withMessage("Invalid email address")
-    .normalizeEmail(),
+    .normalizeEmail()
+    .custom((val) =>
+      User.findOne({ email: val }).then((user) => {
+        if (user) {
+          return Promise.reject(new Error("E-mail already in user"));
+        }
+      })
+    ),
+  check("phone")
+    .optional()
+    .isMobilePhone("ar-EG")
+    .withMessage("Invalid phone number. It must be an Egyptian number"),
   validatorMiddleware,
 ];
 
