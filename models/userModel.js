@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       match: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
     },
+    phone: {
+      type: String,
+      required: true,
+    },
     verified: {
       type: Boolean,
       default: false,
@@ -30,7 +34,7 @@ const userSchema = new mongoose.Schema(
     },
     cart: [
       {
-        productId: {
+        product: {
           type: mongoose.Schema.Types.ObjectId,
           required: [true, "Product id is required"],
           ref: "Product",
@@ -43,17 +47,13 @@ const userSchema = new mongoose.Schema(
     ],
     address: [
       {
-        street: String,
-        buildingNumber: String,
-        city: String,
         governorate: String,
+        city: String,
+        street: String,
+        building: String,
         zipCode: String,
       },
     ],
-    phone: {
-      type: String,
-      match: /^\+20\d{10}$/,
-    },
     favorite: [
       {
         type: mongoose.Schema.Types.ObjectId,
