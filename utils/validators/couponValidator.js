@@ -16,6 +16,7 @@ const createCouponValidator = [
     .notEmpty()
     .withMessage("Coupon code is required"),
   body("discount")
+    .optional() 
     .isNumeric()
     .withMessage("Discount must be a number"),
   body("percentageDiscount")
