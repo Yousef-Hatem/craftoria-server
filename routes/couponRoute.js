@@ -10,8 +10,8 @@ const { couponValidator, validateCoupon } = require("../middlewares/validatorMid
 
 const router = express.Router();
 
-router.post("/createCopoun", couponValidator, validateCoupon, createCoupon);
-router.get("/getCopouns", getCoupons);
+router.post("/", couponValidator, validateCoupon, createCoupon);
+router.get("/", getCoupons);
 router.get("/:id", getCouponById);
 router.put('/:id', couponValidation, updateCoupon);
 router.delete('/:id', deleteCoupon);
