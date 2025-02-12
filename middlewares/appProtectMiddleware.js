@@ -27,14 +27,14 @@ const appProtectMiddleware = (app) => {
   app.use(cors({ origin: CLIENT_URL }));
 
   // Limit each IP to 100 requests per `window` (here, per 5 minutes)
-  app.use(
-    rateLimit({
-      windowMs: 5 * 60 * 1000,
-      max: 100,
-      message:
-        "Too many requests were sent from this IP address, please try again later",
-    })
-  );
+  // app.use(
+  //   rateLimit({
+  //     windowMs: 5 * 60 * 1000,
+  //     max: 100,
+  //     message:
+  //       "Too many requests were sent from this IP address, please try again later",
+  //   })
+  // );
 
   // Use helmet
   app.use(
