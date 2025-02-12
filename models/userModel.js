@@ -45,18 +45,34 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
-    address: [
+    addresses: [
       {
-        governorate: String,
-        city: String,
-        street: String,
-        building: String,
-        zipCode: String,
+        governorate: {
+          type: String,
+          required: [true, "Governorate required"],
+        },
+        city: {
+          type: String,
+          required: [true, "City required"],
+        },
+        street: {
+          type: String,
+          required: [true, "Street required"],
+        },
+        building: {
+          type: String,
+          required: [true, "Building required"],
+        },
+        zipCode: {
+          type: String,
+          required: [true, "Zip code is required"],
+        },
       },
     ],
-    favorite: [
+    favorites: [
       {
         type: mongoose.Schema.Types.ObjectId,
+        required: [true, "Product id is required"],
         ref: "Product",
       },
     ],
