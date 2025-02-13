@@ -16,6 +16,7 @@ const dbConnection = require("./config/database");
 
 // Routes
 const mountRoutes = require("./routes");
+const { webhookCheckout } = require("./controllers/orderController");
 
 (async function () {
   // Express app
@@ -53,6 +54,13 @@ const mountRoutes = require("./routes");
 
   // Compress all responses
   app.use(compression());
+
+  // Checkout webhook
+  app.post(
+    "/webhook-checkout",
+    express.raw({ type: "application/json" }),
+    webhookCheckout
+  );
 
   // Middlewares
   app.use(express.json({ limit: "20kb" }));

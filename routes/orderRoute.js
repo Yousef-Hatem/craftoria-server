@@ -1,41 +1,33 @@
-const express = require('express');
+const express = require("express");
+
 const router = express.Router();
-const { 
-    createOrder,
-    getAllOrders,
-    getOrderById,
-    updateOrderStatus,
-    cancelOrder,
-    getLoggedUserOrders,
-    getLoggedUserOrderById
-} = require('../controllers/orderController');
+const {
+  createOrder,
+  getAllOrders,
+  getOrderById,
+  updateOrderStatus,
+  cancelOrder,
+  getLoggedUserOrders,
+  getLoggedUserOrderById,
+  checkoutSession,
+} = require("../controllers/orderController");
 const authService = require("../controllers/authController");
 
 // Routes for orders
 router.use(authService.protect);
 
-router.post('/', createOrder); 
-router.get('/', getLoggedUserOrders); 
-router.get('/:id', getLoggedUserOrderById); 
+router.get("/checkout-session/:shippingAddressId", checkoutSession);
 
+router.post("/", createOrder);
+router.get("/", getLoggedUserOrders);
+router.get("/:id", getLoggedUserOrderById);
 
 router.use(authService.allowedTo("admin"));
 
-router.get('/', getAllOrders); // عرض كل الطلبات (للمدير فقط)
-router.get('/:id', getOrderById); // عرض طلب معين (للمدير فقط)
+router.get("/", getAllOrders);
+router.get("/:id", getOrderById);
 
-
-
-
-
-
-
-
-
-
-router.put('/update/:orderId', updateOrderStatus); // تحديث حالة الطلب
-router.delete('/cancel/:id', cancelOrder); // إلغاء طلب (للمدير فقط)
-
+router.put("/update/:orderId", updateOrderStatus);
+router.delete("/cancel/:id", cancelOrder);
 
 module.exports = router;
-
